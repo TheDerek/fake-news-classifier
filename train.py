@@ -9,7 +9,7 @@ from tqdm import tqdm
 
 import data_helpers
 import time
-import contextlib
+import dataset
 
 from TqdmUtil import std_out_err_redirect_tqdm
 from text_cnn import TextCNN
@@ -32,7 +32,7 @@ tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularization lambda (default: 
 
 # Training parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
-tf.flags.DEFINE_integer("num_epochs", 5, "Number of training epochs (default: 200)")
+tf.flags.DEFINE_integer("num_epochs", 10, "Number of training epochs (default: 200)")
 tf.flags.DEFINE_integer("evaluate_every", 100, "Evaluate model on dev set after this many steps (default: 100)")
 tf.flags.DEFINE_integer("checkpoint_every", 100, "Save model after this many steps (default: 100)")
 tf.flags.DEFINE_integer("num_checkpoints", 5, "Number of checkpoints to store (default: 5)")
@@ -53,7 +53,7 @@ print("")
 
 # Load data
 print("Loading data...")
-x_text, y = data_helpers.load_data_and_labels(FLAGS.positive_data_file, FLAGS.negative_data_file)
+x_text, y = dataset.get_corpus(dataset.POLTIFACT_TRAIN)
 
 # Build vocabulary
 max_document_length = max([len(x.split(" ")) for x in x_text])
