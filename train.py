@@ -56,11 +56,13 @@ print("Loading data...")
 x_text, y = dataset.get_corpus(dataset.POLTIFACT_TRAIN)
 
 # Build vocabulary
+print("Building vocabulary...")
 max_document_length = max([len(x.split(" ")) for x in x_text])
 vocab_processor = learn.preprocessing.VocabularyProcessor(max_document_length)
 x = np.array(list(vocab_processor.fit_transform(x_text)))
 
-# Randomly shuffle data
+# Randomly shuffle data#
+print("Shuffling data...")
 np.random.seed(10)
 shuffle_indices = np.random.permutation(np.arange(len(y)))
 x_shuffled = x[shuffle_indices]
@@ -68,6 +70,7 @@ y_shuffled = y[shuffle_indices]
 
 # Split train/test set
 # TODO: This is very crude, should use cross-validation
+print("Splitting into training and testing")
 dev_sample_index = -1 * int(FLAGS.dev_sample_percentage * float(len(y)))
 x_train, x_dev = x_shuffled[:dev_sample_index], x_shuffled[dev_sample_index:]
 y_train, y_dev = y_shuffled[:dev_sample_index], y_shuffled[dev_sample_index:]
