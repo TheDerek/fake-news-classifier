@@ -17,6 +17,9 @@ from tensorflow.contrib import learn
 
 # Parameters
 # ==================================================
+WORD2VEC_PATH = 'data/GoogleNews-vectors-negative300.bin'
+WORD2VEC_BIN_PATH = '...'
+LEARNING_RATE = 0.005
 
 # Data loading params
 tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
@@ -24,7 +27,8 @@ tf.flags.DEFINE_string("positive_data_file", "./data/rt-polaritydata/rt-polarity
 tf.flags.DEFINE_string("negative_data_file", "./data/rt-polaritydata/rt-polarity.neg", "Data source for the negative data.")
 
 # Model Hyperparameters
-tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)")
+tf.flags.DEFINE_integer("embedding_dim", 300, "Dimensionality of character embedding ("
+                                            "default: 128)")
 tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
 tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (default: 128)")
 tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
@@ -101,7 +105,7 @@ with tf.Graph().as_default():
 
         # Define Training procedure
         global_step = tf.Variable(0, name="global_step", trainable=False)
-        optimizer = tf.train.AdamOptimizer(1e-3)
+        optimizer = tf.train.AdamOptimizer(LEARNING_RATE)
         grads_and_vars = optimizer.compute_gradients(cnn.loss)
         train_op = optimizer.apply_gradients(grads_and_vars, global_step=global_step)
 
@@ -146,6 +150,13 @@ with tf.Graph().as_default():
 
         # Initialize all variables
         sess.run(tf.global_variables_initializer())
+
+        # Load word2vec embeddings
+        print('Loading word2vec embeddings...')
+        vocabulary = vocab_processor.vocabulary_
+        initW = data_helpers.load_embedding_vectors_word2vec(vocabulary, WORD2VEC_PATH,
+                                                             True)
+        sess.run(cnn.W.assign(initW))
 
         def train_step(x_batch, y_batch):
             """
