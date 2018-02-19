@@ -3,12 +3,10 @@ import pandas as pd
 from collections import namedtuple
 from pandas import read_csv
 
-
-POLTIFACT = 'poltifact.csv'
 POLTIFACT_TRAIN = 'poltifact_train.csv'
 POLTIFACT_TEST = 'poltifact_test.csv'
-ARTICLES = 'fake_or_real_news.csv'
-IMPROVED_ARTICLES = 'improved_articles.csv'
+ARTICLES_TRAIN = 'articles_train.csv'
+ARTICLES_TEST = 'articles_test.csv'
 current_path = os.path.dirname(__file__)
 
 Corpus: ([str], [str]) = namedtuple('Corpus', 'data target')

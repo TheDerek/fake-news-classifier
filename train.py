@@ -57,7 +57,7 @@ print("")
 
 # Load data
 print("Loading data...")
-x_text, y = dataset.get_corpus(dataset.POLTIFACT_TRAIN)
+x_text, y = dataset.get_corpus(dataset.ARTICLES_TRAIN)
 
 # Build vocabulary
 print("Building vocabulary...")

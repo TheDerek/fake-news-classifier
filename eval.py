@@ -38,7 +38,7 @@ print("")
 if True: #FLAGS.eval_train:
     #x_raw, y_test = data_helpers.load_data_and_labels(FLAGS.positive_data_file,
     # FLAGS.negative_data_file)
-    x_raw, y_test = dataset.get_corpus(dataset.POLTIFACT_TEST)
+    x_raw, y_test = dataset.get_corpus(dataset.ARTICLES_TEST)
     y_test = np.argmax(y_test, axis=1)
 else:
     x_raw = ["a masterpiece four years in the making", "everything is off."]
