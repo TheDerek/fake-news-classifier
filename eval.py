@@ -7,6 +7,7 @@ import time
 import datetime
 import data_helpers
 import dataset
+
 from text_cnn import TextCNN
 from tensorflow.contrib import learn
 import csv
@@ -21,6 +22,7 @@ tf.flags.DEFINE_string("negative_data_file", "./data/rt-polaritydata/rt-polarity
 # Eval Parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
 tf.flags.DEFINE_string("checkpoint_dir", "", "Checkpoint directory from training run")
+tf.flags.DEFINE_string("dataset_name", "", "Checkpoint directory from training run")
 tf.flags.DEFINE_boolean("eval_train", True, "Evaluate on all training data")
 
 # Misc Parameters
@@ -38,7 +40,7 @@ print("")
 if True: #FLAGS.eval_train:
     #x_raw, y_test = data_helpers.load_data_and_labels(FLAGS.positive_data_file,
     # FLAGS.negative_data_file)
-    x_raw, y_test = dataset.get_corpus(dataset.ARTICLES_TEST)
+    x_raw, y_test = dataset.get_corpus(FLAGS.dataset_name)
     y_test = np.argmax(y_test, axis=1)
 else:
     x_raw = ["a masterpiece four years in the making", "everything is off."]

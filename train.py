@@ -4,6 +4,8 @@ import tensorflow as tf
 import numpy as np
 import os
 import datetime
+import argparse
+
 
 from tqdm import tqdm
 
@@ -23,12 +25,9 @@ LEARNING_RATE = 0.005
 
 # Data loading params
 tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
-tf.flags.DEFINE_string("positive_data_file", "./data/rt-polaritydata/rt-polarity.pos", "Data source for the positive data.")
-tf.flags.DEFINE_string("negative_data_file", "./data/rt-polaritydata/rt-polarity.neg", "Data source for the negative data.")
-
+tf.flags.DEFINE_string("dataset_name", "articles_train.csv", "The name of the dataset in data/ to use")
 # Model Hyperparameters
-tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding ("
-                                            "default: 128)")
+tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding default: 128)")
 tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
 tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (default: 128)")
 tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
@@ -51,13 +50,12 @@ for attr, value in sorted(FLAGS.__flags.items()):
     print("{}={}".format(attr.upper(), value))
 print("")
 
-
 # Data Preparation
 # ==================================================
 
 # Load data
 print("Loading data...")
-x_text, y = dataset.get_corpus(dataset.MOVIE_REVIEWS_TEST)
+x_text, y = dataset.get_corpus(FLAGS.dataset_name)
 
 # Build vocabulary
 print("Building vocabulary...")
