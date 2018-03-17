@@ -65,7 +65,7 @@ max_document_length = max([len(x.split(" ")) for x in x_text])
 # Cap out max document length from being over 500 words
 max_document_length = min(max_document_length, 500)
 print('Max doc length: {}'.format(max_document_length))
-dvocab_processor = learn.preprocessing.VocabularyProcessor(max_document_length)
+vocab_processor = learn.preprocessing.VocabularyProcessor(max_document_length)
 x = np.array(list(vocab_processor.fit_transform(x_text)))
 
 # Randomly shuffle data#
