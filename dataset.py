@@ -15,7 +15,10 @@ Corpus = namedtuple('Corpus', 'data target')
 Dataset = namedtuple('Dataset', 'data target labels')
 
 
-def get_corpus(file_name: str):
-    path = os.path.join(current_path, 'data', file_name)
+def get_corpus(path: str):
+    # If the given path does not exist then try appending data/
+    if not os.path.isfile(path):
+        path = os.path.join(current_path, 'data', path)
+
     data = read_csv(path)
     return Corpus(data.text.tolist(), pd.get_dummies(data.label).as_matrix())
