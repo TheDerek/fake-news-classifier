@@ -1,5 +1,7 @@
 #! /usr/bin/env python
 import sys
+import warnings
+
 import tensorflow as tf
 import numpy as np
 import os
@@ -19,16 +21,22 @@ from tensorflow.contrib import learn
 
 # Parameters
 # ==================================================
-WORD2VEC_PATH = 'data/GoogleNews-vectors-negative300.bin'
-WORD2VEC_BIN_PATH = '...'
 LEARNING_RATE = 0.005
 
 # Data loading params
-tf.flags.DEFINE_float("dev_sample_percentage", .1, "Percentage of the training data to use for validation")
-tf.flags.DEFINE_string("dataset_name", "articles_test.csv", "The name of the "
-                                                                 "dataset in data/ to use")
+tf.flags.DEFINE_string('embedding_path', None,
+                       'The path of the Word2Vec file, leave empty to not use it')
+tf.flags.DEFINE_float("dev_sample_percentage", .1,
+                      "Percentage of the training data to use for validation")
+tf.flags.DEFINE_string("dataset_name", "articles_test.csv",
+                       "The name of the dataset to use")
+tf.flags.DEFINE_integer("max_doc_length", 500,
+                        "Maximum number of tokens in a document before they are culled")
+
+
 # Model Hyperparameters
-tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding default: 128)")
+tf.flags.DEFINE_integer("embedding_dim", 300, "Dimensionality of character embedding "
+                                            "default: 128)")
 tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
 tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (default: 128)")
 tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
@@ -64,7 +72,7 @@ max_document_length = max([len(x.split(" ")) for x in x_text])
 
 # Cap out max document length from being over 500 words
 max_document_length = min(max_document_length, 500)
-print('Max doc length: {}'.format(max_document_length))
+print('Max doc length: {}'.format(FLAGS.max_doc_length))
 vocab_processor = learn.preprocessing.VocabularyProcessor(max_document_length)
 x = np.array(list(vocab_processor.fit_transform(x_text)))
 
@@ -155,11 +163,14 @@ with tf.Graph().as_default():
         sess.run(tf.global_variables_initializer())
 
         # Load word2vec embeddings (Uncomment for word2vec stuff, if it actually works)
-        # print('Loading word2vec embeddings...')
-        # vocabulary = vocab_processor.vocabulary_
-        # initW = data_helpers.load_embedding_vectors_word2vec(vocabulary, WORD2VEC_PATH,
-        #                                                      True)
-        # sess.run(cnn.W.assign(initW))
+        if FLAGS.embedding_path:
+            print('Loading word2vec embeddings...')
+            vocabulary = vocab_processor.vocabulary_
+            initW = data_helpers.load_embedding_vectors_word2vec(
+                vocabulary, FLAGS.embedding_path, True)
+            sess.run(cnn.W.assign(initW))
+        else:
+            warnings.warn('Pre-trained word vectors are not being used for this session.')
 
         def train_step(x_batch, y_batch):
             """
